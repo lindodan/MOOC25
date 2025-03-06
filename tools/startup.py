@@ -30,17 +30,24 @@ print("Enron dataset should be last item on the list, along with its current siz
 print("Download will complete at about 1.82 GB")
 
 import requests
+"""
 url = "https://www.cs.cmu.edu/~./enron/enron_mail_20150507.tar.gz"
 filename = "../enron_mail_20150507.tar.gz"
 with open(filename, "wb") as f:
     r = requests.get(url)
     f.write(r.content)
 print("Download Complete!")
+"""
 
 print("Unzipping Enron dataset (This may take a while)")
 import tarfile
-tfile = tarfile.open("../enron_mail_20150507.tar.gz")
-tfile.extractall(".")
+
+file_path = "../enron_mail_20150507.tar.gz"
+
+with tarfile.open(file_path, "r:gz") as tfile:
+    tfile.extractall(".", filter="fully_trusted")  # Povolit všechny soubory bez omezení
+
+print("Extraction Complete!")
 tfile.close()
 
 print("You're ready to go!")
