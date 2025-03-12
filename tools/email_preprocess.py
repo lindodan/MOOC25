@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectPercentile, f_classif
 
-def preprocess(words_file = "../tools/word_data_unix.pkl", authors_file="../tools/email_authors.pkl"):
+def preprocess(words_file = "../tools/word_data_unix.pkl", authors_file="../tools/email_authors_unix.pkl"):
     """
         this function takes a pre-made list of email texts (by default word_data.pkl)
         and the corresponding authors (by default email_authors.pkl) and performs
@@ -49,7 +49,7 @@ def preprocess(words_file = "../tools/word_data_unix.pkl", authors_file="../tool
 
     ### feature selection, because text is super high dimensional and
     ### can be really computationally chewy as a result
-    selector = SelectPercentile(f_classif, percentile=1)
+    selector = SelectPercentile(f_classif, percentile=10)
     selector.fit(features_train_transformed, labels_train)
     features_train_transformed = selector.transform(features_train_transformed).toarray()
     features_test_transformed  = selector.transform(features_test_transformed).toarray()
