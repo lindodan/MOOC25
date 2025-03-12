@@ -8,10 +8,10 @@ numpy.random.seed(42)
 ### The words (features) and authors (labels), already largely processed.
 ### These files should have been created from the previous (Lesson 10)
 ### mini-project.
-words_file = "../text_learning/your_word_data.pkl" 
-authors_file = "../text_learning/your_email_authors.pkl"
-word_data = joblib.load( open(words_file, "r"))
-authors = joblib.load( open(authors_file, "r") )
+words_file = "../text_learning/your_word_data_unix.pkl"
+authors_file = "../text_learning/your_email_authors_unix.pkl"
+word_data = joblib.load( open(words_file, "rb"))
+authors = joblib.load( open(authors_file, "rb") )
 
 
 
@@ -36,7 +36,18 @@ labels_train   = labels_train[:150]
 
 
 
+
+
 ### your code goes here
 
-
-
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+classifier = DecisionTreeClassifier()
+classifier.fit(features_train, labels_train)
+pred = classifier.predict(features_test)
+print(accuracy_score(pred, labels_test))
+feature_names = vectorizer.get_feature_names_out()
+feature_importance = classifier.feature_importances_
+for i,f in zip(range(len(feature_importance)),feature_importance):
+    if f > 0.1:
+        print(feature_names[i],f,i)
