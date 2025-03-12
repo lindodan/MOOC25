@@ -12,10 +12,15 @@
 import os
 import joblib
 import sys
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+
+
 sys.path.append(os.path.abspath("../tools/"))
 from feature_format import featureFormat, targetFeatureSplit
 
-data_dict = joblib.load(open("../final_project/final_project_dataset.pkl", "rb") )
+data_dict = joblib.load(open("../final_project/final_project_dataset_unix.pkl", "rb") )
 
 ### first element is our labels, any added elements are predictor
 ### features. Keep this the same for the mini-project, but you'll
@@ -27,6 +32,18 @@ labels, features = targetFeatureSplit(data)
 
 
 
-### it's all yours from here forward!  
+clf = DecisionTreeClassifier()
+clf = clf.fit(features, labels)
+pred = clf.predict(features)
+#print accuracy
+print(accuracy_score(pred,labels))
 
+### it's all yours from here forward!
+
+# make train test split
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.3, random_state=42)
+clf = DecisionTreeClassifier()
+clf = clf.fit(X_train, y_train)
+pred = clf.predict(X_test)
+print(accuracy_score(pred,y_test))
 
