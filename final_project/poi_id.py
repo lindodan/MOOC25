@@ -3,6 +3,9 @@
 import sys
 import pickle
 import os
+
+from cv2.gapi import kernel
+
 sys.path.append(os.path.abspath(("../tools/")))
 import pandas as pd
 import numpy as np
@@ -45,6 +48,8 @@ my_dataset = data_dict
 ### Extract features and labels from dataset for local testing
 data = featureFormat(my_dataset, features_list, sort_keys = True)
 labels, features = targetFeatureSplit(data)
+features = np.array(features)
+labels = np.array(labels)
 
 
 ### Task 4: Try a varity of classifiers
@@ -66,37 +71,12 @@ from sklearn.model_selection import train_test_split
 features_train, features_test, labels_train, labels_test = \
     train_test_split(features, labels, test_size=0.3, random_state=42)
 
-pipeline = ImbPipeline([
-    ("smote", SMOTE(sampling_strategy=0.7, random_state=42)),
-    ("scaler", StandardScaler()),  # preprocess data
-    ("svm", SVC(probability=False, random_state=42))  # SVM model
-])
-
-# Define parameter grid for GridSearchCV
-param_grid_svm = {
-    "svm__C": [0.1, 1, 10],
-    "svm__kernel": ["rbf", "linear"],
-    "svm__gamma": ["scale", 0.01, 0.1, 1],
-}
-
-# Set up GridSearchCV with recall scoring
-grid_search_svm = GridSearchCV(pipeline, param_grid_svm, scoring="recall", cv=5, n_jobs=-1)
-
-# Train model using GridSearchCV (pipeline ensures correct preprocessing)
-grid_search_svm.fit(features_train, labels_train)
-
-# Get the best model
-best_svm = grid_search_svm.best_estimator_
-
-# Predict on test data
-predictions_svm = best_svm.predict(features_test)
-
-# Print best parameters and classification report
-print("Best Parameters for SVM:", grid_search_svm.best_params_)
+clf = SVC(C=10,gamma='scale', kernel='rbf', random_state=42)
+clf.fit(features_train,labels_train)
+prediction = clf.predict(features_test)
 print("Classification Report (SVM):")
-print(classification_report(labels_test, predictions_svm))
+print(classification_report(labels_test, prediction))
 
-clf = best_svm
 
 ### Task 6: Dump your classifier, dataset, and features_list so anyone can
 ### check your results. You do not need to change anything below, but make sure
